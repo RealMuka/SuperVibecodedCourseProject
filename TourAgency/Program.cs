@@ -32,6 +32,10 @@ var app = builder.Build();
 
 app.UseCors("AllowAll");
 
+// Serve static files (HTML, CSS, JS)
+app.UseStaticFiles();
+app.UseDefaultFiles();
+
 // Initialize database
 using (var scope = app.Services.CreateScope())
 {
