@@ -5,18 +5,11 @@ using TourAgency.Models.Entities;
 
 namespace TourAgency.Services;
 
-public class UserService : IUserService
+public class UserService(TourAgencyDbContext db) : IUserService
 {
-    private readonly TourAgencyDbContext _db;
-    
-    public UserService(TourAgencyDbContext db)
-    {
-        _db = db;
-    }
-    
     public async Task<UserDto?> GetUserByIdAsync(int id)
     {
-        var user = await _db.Users
+        var user = await db.Users
             .Include(u => u.Reviews)
             .FirstOrDefaultAsync(u => u.Id == id);
         
@@ -28,7 +21,7 @@ public class UserService : IUserService
     
     public async Task<List<UserDto>> GetAllUsersAsync()
     {
-        return await _db.Users
+        return await db.Users
             .Include(u => u.Reviews)
             .Select(u => MapToDto(u))
             .ToListAsync();
@@ -45,8 +38,8 @@ public class UserService : IUserService
             ToursRequested = 0
         };
         
-        _db.Users.Add(user);
-        await _db.SaveChangesAsync();
+        db.Users.Add(user);
+        await db.SaveChangesAsync();
         
         return MapToDto(user);
     }

@@ -5,21 +5,14 @@ using TourAgency.Models.Entities;
 
 namespace TourAgency.Services;
 
-public class TourService : ITourService
+public class TourService(TourAgencyDbContext db) : ITourService
 {
-    private readonly TourAgencyDbContext _db;
-    
-    public TourService(TourAgencyDbContext db)
-    {
-        _db = db;
-    }
-    
     public async Task<List<TourSummaryDto>> GetAllToursAsync(
         string? category, 
         decimal? maxPrice, 
         double? minRating)
     {
-        var query = _db.Tours
+        var query = db.Tours
             .Include(t => t.Reviews)
             .AsQueryable();
         
@@ -56,7 +49,7 @@ public class TourService : ITourService
     
     public async Task<TourDto?> GetTourByIdAsync(int id)
     {
-        var tour = await _db.Tours
+        var tour = await db.Tours
             .Include(t => t.Reviews)
             .FirstOrDefaultAsync(t => t.Id == id);
         
@@ -86,7 +79,7 @@ public class TourService : ITourService
     
     public async Task<TourDto> AddReviewAsync(int tourId, CreateReviewDto review)
     {
-        var tour = await _db.Tours
+        var tour = await db.Tours
             .Include(t => t.Reviews)
             .FirstOrDefaultAsync(t => t.Id == tourId);
         
@@ -107,7 +100,7 @@ public class TourService : ITourService
         tour.Reviews.Add(newReview);
         tour.AverageRating = Math.Round(tour.Reviews.Average(r => r.Rating), 2);
         
-        await _db.SaveChangesAsync();
+        await db.SaveChangesAsync();
         
         return (await GetTourByIdAsync(tourId))!;
     }
