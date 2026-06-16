@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали тура — Поехали!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">🌍 Поехали!</a>
+            <nav>
+                <a href="index.html" class="nav-link">Туры</a>
+                <a href="profile.html?userId=1" class="nav-link">Профиль</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <a href="index.html" class="btn-back">← Назад к турам</a>
+        
+        <div id="error-container" class="error-message hidden"></div>
+        <div id="tour-loading" class="loading">✨ Загружаем детали тура...</div>
+
+        <div id="tour-details" class="tour-detail-grid hidden">
+            <!-- Карточка тура с изображением -->
+            <div class="tour-detail-card">
+                <img id="tour-image" src="" alt="Изображение тура" class="tour-detail-image">
+                <div class="tour-detail-info">
+                    <div class="tour-meta">
+                        <span class="tour-badge" id="tour-category">Категория</span>
+                        <span class="tour-rating-badge" id="tour-rating">⭐ 0.0</span>
+                    </div>
+                    <h1 id="tour-title">Название тура</h1>
+                    <div class="tour-price-display" id="tour-price">0 ₽</div>
+                    <p class="tour-description" id="tour-description">Описание...</p>
+                </div>
+            </div>
+
+            <!-- Отзывы и форма -->
+            <div class="tour-reviews-section">
+                <h2>Отзывы путешественников</h2>
+                
+                <!-- Форма отзыва -->
+                <form id="review-form" class="review-form-box">
+                    <h3>Оставить отзыв</h3>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="review-username">Ваше имя</label>
+                            <input type="text" id="review-username" required placeholder="Иван Иванов">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="review-rating">Оценка</label>
+                            <select id="review-rating" required>
+                                <option value="5">⭐⭐⭐⭐⭐ 5 звезд</option>
+                                <option value="4">⭐⭐⭐⭐ 4 звезды</option>
+                                <option value="3">⭐⭐⭐ 3 звезды</option>
+                                <option value="2">⭐⭐ 2 звезды</option>
+                                <option value="1">⭐ 1 звезда</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="review-text">Ваш отзыв</label>
+                        <textarea id="review-text" rows="4" required placeholder="Поделитесь впечатлениями от поездки..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">Отправить отзыв</button>
+                </form>
+
+                <!-- Список отзывов -->
+                <div class="reviews-bento-list" id="reviews-container">
+                    <!-- Отзывы рендерятся здесь -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2024 Поехали! Все права защищены. 🧳</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/tour.js"></script>
+</body>
+</html>
