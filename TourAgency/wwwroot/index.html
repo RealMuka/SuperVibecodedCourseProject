@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поехали! — Современное Турагентство</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">🌍 Поехали!</a>
+            <nav>
+                <a href="index.html" class="nav-link active">Туры</a>
+                <a href="profile.html?userId=1" id="header-profile-link" class="nav-link">Профиль</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Баннер приветствия -->
+        <section class="bento-banner">
+            <div class="banner-content">
+                <h1>Открой мир с нами</h1>
+                <p>Найди идеальный тур для своего приключения</p>
+            </div>
+        </section>
+
+        <!-- Фильтры в бенто сетке -->
+        <section class="filters-bento">
+            <div class="filter-box filter-categories">
+                <h3>Категории</h3>
+                <div class="category-chips" id="categories-container">
+                    <!-- Категории загрузятся динамически -->
+                </div>
+            </div>
+
+            <div class="filter-box filter-price">
+                <h3>Бюджет</h3>
+                <div class="price-range-container">
+                    <input type="range" id="price-filter" min="0" max="300000" step="5000" value="300000">
+                    <div class="price-display">
+                        <span>0 ₽</span>
+                        <span id="price-max-val">300 000 ₽</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-box filter-rating">
+                <h3>Рейтинг</h3>
+                <select id="rating-filter" class="rating-select">
+                    <option value="0">Любой</option>
+                    <option value="5">⭐ 5.0</option>
+                    <option value="4">⭐ 4.0+</option>
+                    <option value="3">⭐ 3.0+</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Главная сетка туров -->
+        <section class="tours-section">
+            <div id="error-container" class="error-message hidden"></div>
+            <div class="tours-bento-grid" id="tours-container">
+                <div class="loading">✨ Загружаем волшебство туров...</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 Поехали! Все права защищены. Путешествуйте с удовольствием 🧳</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/tours.js"></script>
+</body>
+</html>
