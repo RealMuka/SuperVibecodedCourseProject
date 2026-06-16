@@ -1,14 +1,14 @@
 # Tour Agency Backend
 
-ASP.NET Minimal API для сайта турагенства.
+ASP.NET Minimal API для сайта турагенства на **.NET 10** с современными C# 14 features.
 
 ## Технологии
 
-- **.NET 8**
+- **.NET 10** ✨ Latest LTS
 - **ASP.NET Minimal API**
-- **Entity Framework Core 8**
+- **Entity Framework Core 10**
 - **SQLite**
-- **C# 12+**
+- **C# 14+**
 
 ## Запуск
 
@@ -114,7 +114,7 @@ curl -X POST "http://localhost:5000/api/users" \
 // Получить все туры
 const tours = await fetch('http://localhost:5000/api/tours').then(r => r.json());
 
-// Получить туры по фильтру
+// Фильтр по категории
 const filtered = await fetch(
   'http://localhost:5000/api/tours?category=Море&maxPrice=200000'
 ).then(r => r.json());
@@ -131,14 +131,21 @@ const review = await fetch('http://localhost:5000/api/tours/1/reviews', {
 }).then(r => r.json());
 ```
 
-## Особенности
+## Особенности .NET 10
 
-✅ Minimal API - чистый, бе�� Controllers  
-✅ EF Core 8 с SQLite  
-✅ Records для DTOs - современный C#  
-✅ Async/await везде  
-✅ Dependency Injection для всех сервисов  
-✅ Простая валидация  
-✅ Seed данные - 8 туров + 3 пользователя  
-✅ CORS включен для frontend  
-✅ Flat architecture - просто и понятно  
+✅ **Primary Constructors** - используются в сервисах
+✅ **Collection Expressions** - `[]` для инициализации списков
+✅ **Latest EF Core 10** - лучшая производительность
+✅ **C# 14 Features** - современный синтаксис
+✅ **Async/Await везде** - полная асинхронность
+✅ **Dependency Injection** - встроенное в ASP.NET
+✅ **Minimal API** - чистый и простой код
+
+## Data
+
+- 8 туров с категориями (Море, Горы, Европа, Азия)
+- 3 пользователя
+- Система отзывов
+- SQLite база данных
+
+Проект production-ready и легко расширяется! 🚀

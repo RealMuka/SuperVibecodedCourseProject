@@ -4,18 +4,11 @@ using TourAgency.Models.DTOs;
 
 namespace TourAgency.Services;
 
-public class ReviewService : IReviewService
+public class ReviewService(TourAgencyDbContext db) : IReviewService
 {
-    private readonly TourAgencyDbContext _db;
-    
-    public ReviewService(TourAgencyDbContext db)
-    {
-        _db = db;
-    }
-    
     public async Task<List<ReviewDto>> GetReviewsByTourIdAsync(int tourId)
     {
-        return await _db.Reviews
+        return await db.Reviews
             .Where(r => r.TourId == tourId)
             .OrderByDescending(r => r.CreatedAt)
             .Select(r => new ReviewDto(
