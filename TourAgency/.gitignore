@@ -1,0 +1,28 @@
+# Build results
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# IDE
+.vs/
+.vscode/
+*.code-workspace
+*.user
+*.suo
+*.rsuser
+
+# Dependencies
+packages/
+.nuget/
+
+# Environment
+.env
+.env.local
+appsettings.Local.json
