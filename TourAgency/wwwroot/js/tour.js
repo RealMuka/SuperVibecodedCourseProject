@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    initUserMenu();
     checkAuthAndLoadTour();
 
     async function checkAuthAndLoadTour() {

@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentMaxPrice = 300000;
     let currentMinRating = 0;
 
-    checkAuth();
+    initUserMenu();
     loadCategories();
     loadTours();
 
@@ -83,22 +83,4 @@ document.addEventListener('DOMContentLoaded', () => {
         currentMinRating = parseFloat(e.target.value);
         loadTours();
     });
-
-    // Проверка авторизации и настройка кнопки выхода
-    async function checkAuth() {
-        try {
-            const response = await fetch('/api/auth/me', { credentials: 'include' });
-            const logoutBtn = document.getElementById('logout-btn');
-            if (response.ok) {
-                logoutBtn.classList.remove('hidden');
-                logoutBtn.addEventListener('click', async () => {
-                    await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-                    localStorage.removeItem('userName');
-                    window.location.reload();
-                });
-            }
-        } catch (e) {
-            // Не авторизован
-        }
-    }
 });
