@@ -102,33 +102,6 @@ public static class DbInitializer
         
         db.Tours.AddRange(tours);
         
-        var users = new List<User>
-        {
-            new User
-            {
-                Name = "Елена Волкова",
-                Description = "Люблю путешествия и новые места. Влюблена в моря и пляжи.",
-                ToursRequested = 12,
-                Reviews = []
-            },
-            new User
-            {
-                Name = "Максим Котов",
-                Description = "Активный турист. Люблю горы, трекинг и экстрим.",
-                ToursRequested = 8,
-                Reviews = []
-            },
-            new User
-            {
-                Name = "Ольга Смирнова",
-                Description = "Предпочитаю комфорт и релакс. Европа — моя любовь.",
-                ToursRequested = 15,
-                Reviews = []
-            }
-        };
-        
-        db.Users.AddRange(users);
-        
         await db.SaveChangesAsync();
     }
 }

@@ -1,13 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
     const tourId = getUrlParam('id');
     const reviewForm = document.getElementById('review-form');
+    const reviewUsername = document.getElementById('review-username');
 
     if (!tourId) {
         showGlobalError('ID тура не указан');
         return;
     }
 
-    loadTourDetails();
+    checkAuthAndLoadTour();
+
+    async function checkAuthAndLoadTour() {
+        try {
+            const userResponse = await fetch('/api/auth/me', { credentials: 'include' });
+            if (userResponse.ok) {
+                const user = await userResponse.json();
+                reviewUsername.value = user.name;
+            } else {
+                reviewUsername.value = 'Гость';
+            }
+        } catch (e) {
+            reviewUsername.value = 'Гость';
+        }
+        
+        loadTourDetails();
+    }
 
     async function loadTourDetails() {
         try {
@@ -61,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         const data = {
-            userName: document.getElementById('review-username').value,
             rating: parseInt(document.getElementById('review-rating').value),
             text: document.getElementById('review-text').value
         };
@@ -71,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             reviewForm.reset();
             renderReviews(updatedTour.reviews || []);
         } catch (err) {
-            alert('Не удалось отправить отзыв');
+            alert('Не удалось отправить отзыв. Войдите в аккаунт, чтобы оставлять отзывы.');
         }
     });
 });

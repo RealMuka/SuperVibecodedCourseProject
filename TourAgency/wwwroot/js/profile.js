@@ -1,11 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const userId = getUrlParam('userId') || '1';
-
     loadProfile();
 
     async function loadProfile() {
         try {
-            const user = await get(`/users/${userId}`);
+            const user = await get('/auth/me');
 
             document.getElementById('profile-loading').classList.add('hidden');
             document.getElementById('profile-content').classList.remove('hidden');
@@ -17,7 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             renderUserReviews(user.reviews || []);
         } catch (err) {
-            document.getElementById('profile-loading').textContent = '❌ Ошибка загрузки профиля';
+            document.getElementById('profile-loading').textContent = '❌ Ошибка загрузки профиля. Пожалуйста, войдите в аккаунт.';
+            setTimeout(() => {
+                window.location.href = '/auth';
+            }, 2000);
         }
     }
 

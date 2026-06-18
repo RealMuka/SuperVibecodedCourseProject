@@ -10,50 +10,52 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <a href="index.html" class="logo">🌍 Поехали!</a>
-            <nav>
-                <a href="index.html" class="nav-link">Туры</a>
-                <a href="profile.html?userId=1" class="nav-link active">Профиль</a>
-            </nav>
-        </div>
-    </header>
+    <div class="wrapper">
+        <header>
+            <div class="header-content">
+                <a href="/tours" class="logo">🌍 Поехали!</a>
+                <nav>
+                    <a href="/tours" class="nav-link">Туры</a>
+                    <a href="/profile" class="nav-link active">Профиль</a>
+                </nav>
+            </div>
+        </header>
 
-    <main class="main-container">
-        <a href="index.html" class="btn-back">← Назад</a>
+        <main class="main-container">
+            <a href="/tours" class="btn-back">← Назад</a>
 
-        <div id="error-container" class="error-message hidden"></div>
-        <div id="profile-loading" class="loading">⏳ Загружаем ваш профиль...</div>
+            <div id="error-container" class="error-message hidden"></div>
+            <div id="profile-loading" class="loading">⏳ Загружаем ваш профиль...</div>
 
-        <div id="profile-content" class="profile-grid hidden">
-            <!-- Карточка профиля -->
-            <div class="profile-card-main">
-                <div class="profile-avatar" id="user-avatar">U</div>
-                <h1 id="user-name">Имя Пользователя</h1>
-                <p class="profile-bio" id="user-bio">Описание профиля...</p>
-                
-                <div class="profile-stats">
-                    <div class="stat-chip">
-                        <span class="stat-number" id="stat-tours-count">0</span>
-                        <span class="stat-label">Туров</span>
+            <div id="profile-content" class="profile-grid hidden">
+                <!-- Карточка профиля -->
+                <div class="profile-card-main">
+                    <div class="profile-avatar" id="user-avatar">U</div>
+                    <h1 id="user-name">Имя Пользователя</h1>
+                    <p class="profile-bio" id="user-bio">Описание профиля...</p>
+                    
+                    <div class="profile-stats">
+                        <div class="stat-chip">
+                            <span class="stat-number" id="stat-tours-count">0</span>
+                            <span class="stat-label">Туров</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Отзывы профиля -->
+                <div class="profile-reviews-section">
+                    <h2>Мои отзывы</h2>
+                    <div class="reviews-bento-list" id="user-reviews-container">
+                        <!-- Отзывы загрузятся динамически -->
                     </div>
                 </div>
             </div>
+        </main>
 
-            <!-- Отзывы профиля -->
-            <div class="profile-reviews-section">
-                <h2>Мои отзывы</h2>
-                <div class="reviews-bento-list" id="user-reviews-container">
-                    <!-- Отзывы загрузятся динамически -->
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer>
-        <p>© 2024 Поехали! Все права защищены. 🧳</p>
-    </footer>
+        <footer>
+            <p>© 2026 Поехали! Все права защищены. 🧳</p>
+        </footer>
+    </div>
 
     <script src="js/app.js"></script>
     <script src="js/profile.js"></script>

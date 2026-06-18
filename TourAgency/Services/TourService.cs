@@ -37,7 +37,7 @@ public class TourService(TourAgencyDbContext db) : ITourService
                 t.Id,
                 t.Name,
                 t.Description.Length > 150 
-                    ? t.Description[..150] + "..." 
+                    ? t.Description.Substring(0, 150) + "..." 
                     : t.Description,
                 t.Price,
                 t.ImageUrl,
