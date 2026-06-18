@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    initUserMenu(true);
     loadProfile();
 
     async function loadProfile() {

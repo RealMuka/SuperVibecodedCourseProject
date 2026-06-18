@@ -11,14 +11,21 @@
 </head>
 <body>
     <div class="wrapper">
-        <header>
+<header>
             <div class="header-content">
                 <a href="/tours" class="logo">🌍 Поехали!</a>
-                <nav>
-                    <a href="/tours" class="nav-link active">Туры</a>
-                    <a href="/profile" id="header-profile-link" class="nav-link">Профиль</a>
-                    <button id="logout-btn" class="btn-logout hidden">Выйти</button>
-                </nav>
+                <div class="user-menu" id="user-menu">
+                    <button class="user-menu-btn" id="user-menu-btn">
+                        <span class="user-avatar-small" id="user-avatar-small">👤</span>
+                        <span class="user-name" id="user-name-header">Войти</span>
+                        <span class="user-menu-arrow">▼</span>
+                    </button>
+                    <div class="user-menu-dropdown hidden" id="user-menu-dropdown">
+                        <a href="/tours" class="user-menu-item">🏠 Главная</a>
+                        <a href="/profile" class="user-menu-item" id="profile-menu-item">👤 Профиль</a>
+                        <button class="user-menu-item" id="logout-btn-dropdown">🚪 Выйти</button>
+                    </div>
+                </div>
             </div>
         </header>
 

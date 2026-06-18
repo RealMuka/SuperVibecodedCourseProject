@@ -7,10 +7,8 @@ const passwordInput = document.getElementById('auth-password');
 const errorContainer = document.getElementById('auth-error');
 const submitBtn = document.getElementById('auth-submit-btn');
 
-// Базовый URL для API
 const API_BASE_URL = '/api/auth'; 
 
-// Переключение вкладок
 function switchTab(mode) {
     currentMode = mode;
     errorContainer.classList.add('hidden');
@@ -29,7 +27,6 @@ function switchTab(mode) {
     }
 }
 
-// Обработка отправки формы
 authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     errorContainer.classList.add('hidden');
@@ -81,7 +78,6 @@ authForm.addEventListener('submit', async (e) => {
     }
 });
 
-// Защита страницы авторизации
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         const response = await fetch(`${API_BASE_URL}/me`, { credentials: 'include' });
@@ -91,6 +87,5 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = '/tours';
         }
     } catch (e) {
-        // Пользователь не авторизован
     }
 });

@@ -95,12 +95,12 @@ nav {
 }
 
 .nav-link {
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.95rem;
-  transition: color 0.3s ease;
-  position: relative;
+   color: var(--text-secondary);
+   text-decoration: none;
+   font-weight: 500;
+   font-size: 0.95rem;
+   transition: color 0.3s ease;
+   position: relative;
 }
 
 .nav-link:hover,
@@ -109,14 +109,98 @@ nav {
 }
 
 .nav-link.active::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--primary);
-  border-radius: 1px;
+   content: '';
+   position: absolute;
+   bottom: -8px;
+   left: 0;
+   right: 0;
+   height: 2px;
+   background: var(--primary);
+   border-radius: 1px;
+}
+
+/* ==================== USER MENU DROPDOWN ==================== */
+.user-menu {
+   position: relative;
+}
+
+.user-menu-btn {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   background: var(--bg-secondary);
+   border: 1px solid var(--border-color);
+   border-radius: 20px;
+   padding: 0.5rem 1rem;
+   cursor: pointer;
+   font-weight: 500;
+   font-size: 0.95rem;
+   transition: all 0.3s ease;
+   color: var(--text-secondary);
+}
+
+.user-menu-btn:hover {
+   background: var(--primary-light);
+   border-color: var(--primary);
+   color: var(--text-primary);
+}
+
+.user-avatar-small {
+   width: 28px;
+   height: 28px;
+   border-radius: 50%;
+   background: linear-gradient(135deg, var(--primary), var(--accent-blue));
+   color: white;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: 0.9rem;
+   font-weight: 700;
+}
+
+.user-menu-arrow {
+   font-size: 0.7rem;
+   opacity: 0.6;
+   transition: transform 0.3s ease;
+}
+
+.user-menu-btn.active .user-menu-arrow {
+   transform: rotate(180deg);
+}
+
+.user-menu-dropdown {
+   position: absolute;
+   top: calc(100% + 8px);
+   right: 0;
+   background: var(--bg-primary);
+   border: 1px solid var(--border-color);
+   border-radius: var(--radius-sm);
+   box-shadow: var(--shadow-lg);
+   min-width: 180px;
+   padding: 0.5rem;
+   z-index: 1000;
+   animation: fadeIn 0.2s ease forwards;
+}
+
+.user-menu-item {
+   display: block;
+   width: 100%;
+   padding: 0.75rem 1rem;
+   text-decoration: none;
+   color: var(--text-secondary);
+   font-weight: 500;
+   font-size: 0.9rem;
+   border-radius: 8px;
+   transition: all 0.2s ease;
+   text-align: left;
+   background: none;
+   border: none;
+   cursor: pointer;
+}
+
+.user-menu-item:hover {
+   background: var(--bg-secondary);
+   color: var(--primary);
 }
 
 /* ==================== MAIN CONTAINER ==================== */
