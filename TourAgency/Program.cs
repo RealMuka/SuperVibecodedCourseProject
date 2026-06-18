@@ -1,11 +1,26 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.Text.Json;
 using TourAgency.Data;
 using TourAgency.Models.DTOs;
 using TourAgency.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// CORS
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.LoginPath = "/auth";
+    });
+
+builder.Services.AddAuthorization();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -16,27 +31,81 @@ builder.Services.AddCors(options =>
     });
 });
 
-// DbContext
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+});
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? "Data Source=touragency.db";
 
 builder.Services.AddDbContext<TourAgencyDbContext>(options =>
     options.UseSqlite(connectionString));
 
-// Services
 builder.Services.AddScoped<ITourService, TourService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseCors("AllowAll");
 
-// Serve static files (HTML, CSS, JS)
+app.Use(async (context, next) =>
+{
+    var path = context.Request.Path.Value?.Split('?')[0].TrimEnd('/').ToLowerInvariant();
+
+    if (path == "/auth.html")
+    {
+        context.Response.Redirect("/auth");
+        return;
+    }
+
+    if (path == "/index.html")
+    {
+        if (context.User.Identity?.IsAuthenticated != true)
+        {
+            context.Response.Redirect("/auth");
+            return;
+        }
+
+        context.Response.Redirect("/tours");
+        return;
+    }
+
+    if (path == "/profile.html")
+    {
+        if (context.User.Identity?.IsAuthenticated != true)
+        {
+            context.Response.Redirect("/auth");
+            return;
+        }
+
+        context.Response.Redirect("/profile");
+        return;
+    }
+
+    if (path == "/tour.html")
+    {
+        if (context.User.Identity?.IsAuthenticated != true)
+        {
+            context.Response.Redirect("/auth");
+            return;
+        }
+
+        var queryString = context.Request.QueryString.HasValue ? context.Request.QueryString.Value : string.Empty;
+        context.Response.Redirect($"/tour{queryString}");
+        return;
+    }
+
+    await next();
+});
+
 app.UseStaticFiles();
 app.UseDefaultFiles();
 
-// Initialize database
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<TourAgencyDbContext>();
@@ -44,62 +113,113 @@ using (var scope = app.Services.CreateScope())
     await DbInitializer.InitializeAsync(db);
 }
 
-// ==================== TOUR ENDPOINTS ====================
+var webRoot = app.Environment.WebRootPath;
+
+app.MapGet("/", () => Results.Redirect("/tours"))
+    .RequireAuthorization();
+
+app.MapGet("/auth", () => Results.File(Path.Combine(webRoot, "auth.html"), "text/html"));
+
+app.MapGet("/tours", () => Results.File(Path.Combine(webRoot, "index.html"), "text/html"))
+    .RequireAuthorization();
+
+app.MapGet("/profile", () => Results.File(Path.Combine(webRoot, "profile.html"), "text/html"))
+    .RequireAuthorization();
+
+app.MapGet("/tour", () => Results.File(Path.Combine(webRoot, "tour.html"), "text/html"))
+    .RequireAuthorization();
+
+app.MapGet("/tour/{id:int}", (int id) => Results.Redirect($"/tour?id={id}"))
+    .RequireAuthorization();
+
+app.MapGet("/authorization", () => Results.Redirect("/auth"));
 
 app.MapGet("/api/tours", GetAllTours)
-    .WithName("GetAllTours")
-    .WithOpenApi()
     .Produces<List<TourSummaryDto>>();
 
 app.MapGet("/api/tours/{id}", GetTourById)
-    .WithName("GetTourById")
-    .WithOpenApi()
     .Produces<TourDto>();
 
-// ==================== REVIEW ENDPOINTS ====================
-
 app.MapPost("/api/tours/{id}/reviews", AddReview)
-    .WithName("AddReview")
-    .WithOpenApi()
     .Accepts<CreateReviewDto>("application/json")
     .Produces<TourDto>(StatusCodes.Status200OK)
     .Produces(StatusCodes.Status404NotFound)
     .Produces(StatusCodes.Status400BadRequest);
 
 app.MapGet("/api/categories", GetCategories)
-    .WithName("GetCategories")
-    .WithOpenApi()
     .Produces<List<string>>();
 
-// ==================== USER ENDPOINTS ====================
 
 app.MapGet("/api/users", GetAllUsers)
-    .WithName("GetAllUsers")
-    .WithOpenApi()
     .Produces<List<UserDto>>();
 
 app.MapGet("/api/users/{id}", GetUserById)
-    .WithName("GetUserById")
-    .WithOpenApi()
     .Produces<UserDto>();
 
-app.MapPost("/api/users", CreateUser)
-    .WithName("CreateUser")
-    .WithOpenApi()
-    .Accepts<CreateUserRequest>("application/json")
+app.MapPost("/api/auth/login", LoginUser)
+    .Accepts<AuthRequest>("application/json")
     .Produces<UserDto>(StatusCodes.Status200OK)
     .Produces(StatusCodes.Status400BadRequest);
 
-// ==================== HEALTH CHECK ====================
+app.MapPost("/api/auth/register", RegisterUser)
+    .Accepts<AuthRequest>("application/json")
+    .Produces<UserDto>(StatusCodes.Status200OK)
+    .Produces(StatusCodes.Status400BadRequest);
+
+app.MapGet("/api/auth/me", GetCurrentUser)
+    .Produces<UserDto>(StatusCodes.Status200OK)
+    .Produces(StatusCodes.Status401Unauthorized);
+
+app.MapPost("/api/auth/logout", LogoutUser);
+
 
 app.MapGet("/api/health", () => 
-    Results.Ok(new { status = "ok", timestamp = DateTime.UtcNow }))
-    .WithName("HealthCheck")
-    .WithOpenApi();
+    Results.Ok(new { status = "ok", timestamp = DateTime.UtcNow }));
 
 app.Run();
 
-// ==================== HANDLER METHODS ====================
+async Task<IResult> LoginUser(AuthRequest request, IAuthService service, HttpContext httpContext)
+{
+    var user = await service.LoginAsync(request.name, request.password);
+    if (user == null)
+    {
+        return Results.Json(new { message = "Неверное имя пользователя или пароль" }, statusCode: 400);
+    }
+    
+    var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.Name)
+    };
+    
+    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+    var principal = new ClaimsPrincipal(identity);
+    
+    await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+    
+    return Results.Ok(new 
+    {
+        userId = user.Id,
+        userName = user.Name
+    });
+}
+
+async Task<IResult> RegisterUser(AuthRequest request, IAuthService service)
+{
+    try
+    {
+        var user = await service.RegisterAsync(request.name, request.password);
+        return Results.Ok(new 
+        {
+            userId = user.Id,
+            userName = user.Name
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new { message = ex.Message });
+    }
+}
 
 async Task<IResult> GetAllTours(
     ITourService tourService,
@@ -133,11 +253,28 @@ async Task<IResult> GetTourById(int id, ITourService tourService)
     }
 }
 
-async Task<IResult> AddReview(int id, CreateReviewDto review, ITourService tourService)
+async Task<IResult> AddReview(int id, CreateReviewDto review, ITourService tourService, HttpContext httpContext)
 {
+    if (!httpContext.User.Identity?.IsAuthenticated == true)
+    {
+        return Results.Unauthorized();
+    }
+
+    var userNameClaim = httpContext.User.FindFirst(ClaimTypes.Name);
+    if (userNameClaim == null)
+    {
+        return Results.Unauthorized();
+    }
+
+    var reviewWithUser = new CreateReviewDto(
+        userNameClaim.Value,
+        review.Text,
+        review.Rating
+    );
+
     try
     {
-        var tour = await tourService.AddReviewAsync(id, review);
+        var tour = await tourService.AddReviewAsync(id, reviewWithUser);
         return Results.Ok(tour);
     }
     catch (KeyNotFoundException ex)
@@ -188,23 +325,29 @@ async Task<IResult> GetUserById(int id, IUserService userService)
     }
 }
 
-async Task<IResult> CreateUser(CreateUserRequest request, IUserService userService)
+async Task<IResult> GetCurrentUser(HttpContext httpContext, IUserService userService)
 {
-    try
+    if (!httpContext.User.Identity?.IsAuthenticated == true)
     {
-        var user = await userService.CreateUserAsync(request.Name, request.Description);
-        return Results.Ok(user);
+        return Results.Unauthorized();
     }
-    catch (ArgumentException ex)
+
+    var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+    if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
     {
-        return Results.BadRequest(ex.Message);
+        return Results.Unauthorized();
     }
-    catch (Exception ex)
-    {
-        return Results.Problem(ex.Message);
-    }
+
+    var user = await userService.GetUserByIdAsync(userId);
+    return user is null 
+        ? Results.NotFound($"User {userId} не найден") 
+        : Results.Ok(user);
 }
 
-// ==================== REQUEST MODELS ====================
+IResult LogoutUser(HttpContext httpContext)
+{
+    httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).Wait();
+    return Results.Ok();
+}
 
-public record CreateUserRequest(string Name, string Description);
+public record AuthRequest(string name, string password);

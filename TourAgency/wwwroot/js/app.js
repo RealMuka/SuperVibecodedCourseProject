@@ -2,7 +2,9 @@ const API_BASE = '/api';
 
 async function get(url) {
     try {
-        const response = await fetch(`${API_BASE}${url}`);
+        const response = await fetch(`${API_BASE}${url}`, {
+            credentials: 'include'
+        });
         if (!response.ok) throw new Error(`Ошибка ${response.status}`);
         return await response.json();
     } catch (error) {
@@ -16,7 +18,8 @@ async function post(url, data) {
         const response = await fetch(`${API_BASE}${url}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
+            credentials: 'include'
         });
         if (!response.ok) throw new Error(`Ошибка ${response.status}`);
         return await response.json();

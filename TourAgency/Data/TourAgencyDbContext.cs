@@ -35,7 +35,7 @@ public class TourAgencyDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.Property(u => u.Name).IsRequired().HasMaxLength(100);
-            entity.Property(u => u.Description).IsRequired();
+            entity.Property(u => u.PasswordHash).IsRequired();
         });
         
         base.OnModelCreating(modelBuilder);

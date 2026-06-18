@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentMaxPrice = 300000;
     let currentMinRating = 0;
 
+    checkAuth();
     loadCategories();
     loadTours();
 
@@ -59,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="tour-card-desc">${tour.description}</p>
                         <div class="tour-card-footer">
                             <span class="tour-price">${formatPrice(tour.price)}</span>
-                            <button class="tour-btn" onclick="window.location.href='tour.html?id=${tour.id}'">Подробнее →</button>
+                            <button class="tour-btn" onclick="window.location.href='/tour?id=${tour.id}'">Подробнее →</button>
                         </div>
                     </div>
                 `;
@@ -82,4 +83,22 @@ document.addEventListener('DOMContentLoaded', () => {
         currentMinRating = parseFloat(e.target.value);
         loadTours();
     });
+
+    // Проверка авторизации и настройка кнопки выхода
+    async function checkAuth() {
+        try {
+            const response = await fetch('/api/auth/me', { credentials: 'include' });
+            const logoutBtn = document.getElementById('logout-btn');
+            if (response.ok) {
+                logoutBtn.classList.remove('hidden');
+                logoutBtn.addEventListener('click', async () => {
+                    await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+                    localStorage.removeItem('userName');
+                    window.location.reload();
+                });
+            }
+        } catch (e) {
+            // Не авторизован
+        }
+    }
 });
